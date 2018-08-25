@@ -53,7 +53,7 @@ pub fn encode_and_push_to_string<T: ?Sized + AsRef<[u8]>>(input: &T, output: Str
 
     let current_len = buffer.len();
 
-    let base64_len = ((bytes.len() + 4) / 4) * 4;
+    let base64_len = ((bytes.len() * 4 / 3) + 3) / 4 * 4;
 
     let min_capacity = current_len + base64_len;
 
@@ -158,7 +158,7 @@ pub fn unsafe_escape_owned(base64_str: String) -> String {
 pub fn unsafe_unescape(base64_str: &str) -> String {
     let len = base64_str.len();
 
-    let mut result = Vec::with_capacity(((len + 4) / 4) * 4);
+    let mut result = Vec::with_capacity(((len * 4 / 3) + 3) / 4 * 4);
 
     for &n in base64_str.as_bytes() {
         if n == 45 {
