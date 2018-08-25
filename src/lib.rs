@@ -58,7 +58,7 @@ pub fn encode_and_push_to_string<T: ?Sized + AsRef<[u8]>>(input: &T, output: Str
 
     let current_len = buffer.len();
 
-    let base64_len = ((bytes.len() * 4 / 3) + 3) / 4 * 4;
+    let base64_len = (bytes.len() * 4 + 2) / 3;
 
     let min_capacity = current_len + base64_len;
 
