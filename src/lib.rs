@@ -45,6 +45,11 @@ pub fn encode<T: ?Sized + AsRef<[u8]>>(input: &T) -> String {
     base64::encode_config(input, base64::URL_SAFE_NO_PAD)
 }
 
+/// Encode data to a Base64-URL string into a slice.
+pub fn encode_and_store_to_slice<T: ?Sized + AsRef<[u8]>>(input: &T, output: &mut [u8]) -> usize {
+    base64::encode_config_slice(input, base64::URL_SAFE_NO_PAD, output)
+}
+
 /// Encode data to a Base64-URL string and directly store into a String instance by concatenating them. It is usually for generating a URL.
 pub fn encode_and_push_to_string<T: ?Sized + AsRef<[u8]>>(input: &T, output: String) -> String {
     let bytes = input.as_ref();
@@ -67,7 +72,7 @@ pub fn encode_and_push_to_string<T: ?Sized + AsRef<[u8]>>(input: &T, output: Str
         buffer.set_len(min_capacity);
     }
 
-    let base64_len = base64::encode_config_slice(bytes, base64::URL_SAFE_NO_PAD, &mut buffer[current_len..min_capacity]);
+    let base64_len = encode_and_store_to_slice(bytes, &mut buffer[current_len..min_capacity]);
 
     unsafe {
         buffer.set_len(current_len + base64_len);
@@ -81,7 +86,12 @@ pub fn decode<T: ?Sized + AsRef<[u8]>>(input: &T) -> Result<Vec<u8>, base64::Dec
     base64::decode_config(input, base64::URL_SAFE_NO_PAD)
 }
 
-/// Decode data to a Base64-URL string and directly store into a String instance by concatenating them.
+/// Decode a Base64-URL string to data into a slice.
+pub fn decode_and_store_to_slice<T: ?Sized + AsRef<[u8]>>(input: &T, output: &mut [u8]) -> Result<usize, base64::DecodeError> {
+    base64::decode_config_slice(input, base64::URL_SAFE_NO_PAD, output)
+}
+
+/// Decode a Base64-URL string to data and directly store into a Vec instance by concatenating them.
 pub fn decode_and_push_to_vec<T: ?Sized + AsRef<[u8]>>(input: &T, mut output: Vec<u8>) -> Result<Vec<u8>, base64::DecodeError> {
     let bytes = input.as_ref();
 
@@ -104,7 +114,7 @@ pub fn decode_and_push_to_vec<T: ?Sized + AsRef<[u8]>>(input: &T, mut output: Ve
         output.set_len(min_capacity);
     }
 
-    let original_len = base64::decode_config_slice(bytes, base64::URL_SAFE_NO_PAD, &mut output[current_len..min_capacity])?;
+    let original_len = decode_and_store_to_slice(bytes, &mut output[current_len..min_capacity])?;
 
     unsafe {
         output.set_len(current_len + original_len);
