@@ -1,0 +1,18 @@
+[package]
+name = "base64-url"
+version = "1.0.0"
+authors = ["Magic Len <len@magiclen.org>"]
+repository = "https://github.com/magiclen/base64-url"
+homepage = "https://magiclen.org/base64-url"
+keywords = ["decode", "base64", "encode", "utf8", "url"]
+categories = ["encoding"]
+description= "Base64 encode, decode, escape and unescape for URL applications."
+readme = "README.md"
+license = "MIT"
+
+[badges]
+travis-ci = { repository = "magiclen/base64-url", branch = "master" }
+appveyor = { repository = "magiclen/base64-url", branch = "master", service = "github" }
+
+[dependencies]
+base64 = "0.9.2"
