@@ -1,62 +1,54 @@
-CRC Any
+Base64 URL
 ====================
 
 [![Build Status](https://travis-ci.org/magiclen/base64-url.svg?branch=master)](https://travis-ci.org/magiclen/base64-url)
+[![Build status](https://ci.appveyor.com/api/projects/status/y24btypttrjtnj6h/branch/master?svg=true)](https://ci.appveyor.com/project/magiclen/base64-url/branch/master)
 
-To compute CRC values by providing the length of bits, expression, reflection, an initial value and a final xor value. It has built-in CRC-8-ATM, CRC-8-CDMA, CRC-16-IBM, CRC16-CCITT, CRC-32-IEEE, CRC-32-C, CRC-64-ISO and CRC-64-ECMA functions.
+Base64 encode, decode, escape and unescape for URL applications.
 
-## Usage
+## Examples
 
-You can use `create_crc` associated function to create a CRC instance by providing the length of bits, expression, reflection, an initial value and a final xor value. For example, if you want to compute a CRC-24 value.
+Encode data to a Base64-URL string.
 
-```
-extern crate crc_any;
+```rust
+extern crate base64_url;
 
-use crc_any::CRC;
-
-let mut crc24 = CRC::create_crc(0x0000000000864cfb, 24, 0x0000000000b704ce, 0x0000000000000000, false);
-
-crc24.digest(b"hello");
-
-assert_eq!([71, 245, 138].to_vec(), crc24.get_crc_vec());
+assert_eq!("SGVsbG8sIHdvcmxkIQ", base64_url::encode("Hello, world!"));
 ```
 
-To simplify the usage, there are several common versions of CRC whose computing functions are already built-in.
+Decode a Base64-URL string to data.
 
- * crc8(crc8atm)
- * crc8cdma
- * crc16(crc16ibm)
- * crc16ccitt(crcccitt)
- * crc32(crc32ieee, also called crc32b in `mhash`)
- * crc32mhash
-   * `mhash` is a common library which has two weird versions of CRC32 called `crc32` and `crc32b`. `crc32` and `crc32mhash` in this module are `crc32b` and `crc32` in mhash respectively.
- * crc32c
- * crc64(crc64ecma)
- * crc64iso
+```rust
+extern crate base64_url;
 
-For instance,
-
-```
-extern crate crc_any;
-
-use crc_any::CRC;
-
-let mut crc64ecma = CRC::crc64ecma();
-
-crc64ecma.digest(b"hello");
-
-assert_eq!([236, 83, 136, 71, 154, 124, 145, 63].to_vec(), crc64ecma.get_crc_vec());
+assert_eq!("Hello, world!".as_bytes().to_vec(), base64_url::decode("SGVsbG8sIHdvcmxkIQ").unwrap());
 ```
 
-After getting a CRC value, you can still use the `digest` method to continue computing the next CRC values.
+Escape a Base64 string to a Base64-URL string. It is unsafe because the conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64 string by yourself.
+
+```rust
+extern crate base64_url;
+
+assert_eq!("SGVsbG8sIHdvcmxkIQ", base64_url::unsafe_escape("SGVsbG8sIHdvcmxkIQ=="));
+```
+
+Unescape a Base64-URL string to a Base64-URL string. It is unsafe because the conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64-URL string by yourself.
+
+```rust
+extern crate base64_url;
+
+assert_eq!("SGVsbG8sIHdvcmxkIQ==", base64_url::unsafe_unescape("SGVsbG8sIHdvcmxkIQ"));
+```
+
+Beside, in order to reduce the copy times of strings, you can also use `unsafe_escape_owned` and `unsafe_unescape_owned` associated functions to use the same memory space.
 
 ## Crates.io
 
-https://crates.io/crates/crc-any
+https://crates.io/crates/base64-url
 
 ## Documentation
 
-https://docs.rs/crc-any
+https://docs.rs/base64-url
 
 ## License
 
