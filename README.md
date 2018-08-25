@@ -40,7 +40,7 @@ extern crate base64_url;
 assert_eq!("SGVsbG8sIHdvcmxkIQ==", base64_url::unsafe_unescape("SGVsbG8sIHdvcmxkIQ"));
 ```
 
-Beside, in order to reduce the copy times of strings, you can also use `unsafe_escape_owned` and `unsafe_unescape_owned` associated functions to use the same memory space.
+Besides, in order to reduce the copy times of strings, you can also use `unsafe_escape_owned` and `unsafe_unescape_owned` associated functions to use the same memory space.
 
 ## Crates.io
 
