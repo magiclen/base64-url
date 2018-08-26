@@ -36,7 +36,7 @@
 //! assert_eq!("SGVsbG8sIHdvcmxkIQ==", base64_url::unsafe_unescape("SGVsbG8sIHdvcmxkIQ"));
 //! ```
 //!
-//! Beside, in order to reduce the copy times of strings, you can also use `encode_and_push_to_string`, `decode_and_push_to_vec`, `unsafe_escape_owned` and `unsafe_unescape_owned` associated functions to use the same memory space.
+//! Besides, in order to reduce the copy times of strings, you can also use `encode_and_push_to_string`, `decode_and_push_to_vec`, `unsafe_escape_owned` and `unsafe_unescape_owned` associated functions to use the same memory space.
 
 pub extern crate base64;
 
