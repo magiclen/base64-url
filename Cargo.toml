@@ -1,6 +1,6 @@
 [package]
 name = "base64-url"
-version = "1.1.4"
+version = "1.1.5"
 authors = ["Magic Len <len@magiclen.org>"]
 repository = "https://github.com/magiclen/base64-url"
 homepage = "https://magiclen.org/base64-url"
@@ -15,4 +15,4 @@ travis-ci = { repository = "magiclen/base64-url", branch = "master" }
 appveyor = { repository = "magiclen/base64-url", branch = "master", service = "github" }
 
 [dependencies]
-base64 = "0.9.2"
+base64 = "0.9.3"

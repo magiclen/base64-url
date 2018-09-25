@@ -78,7 +78,9 @@ pub fn encode_and_push_to_string<T: ?Sized + AsRef<[u8]>>(input: &T, output: Str
         buffer.set_len(current_len + base64_len);
     }
 
-    String::from_utf8(buffer).unwrap()
+    unsafe {
+        String::from_utf8_unchecked(buffer)
+    }
 }
 
 /// Decode a Base64-URL string to data.
@@ -139,7 +141,9 @@ pub fn unsafe_escape(base64_str: &str) -> String {
         }
     }
 
-    String::from_utf8(result).unwrap()
+    unsafe {
+        String::from_utf8_unchecked(result)
+    }
 }
 
 /// Escape a Base64 string to a Base64-URL string. It is unsafe because the conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64 string by yourself.
@@ -161,7 +165,9 @@ pub fn unsafe_escape_owned(base64_str: String) -> String {
         result.set_len(len);
     }
 
-    String::from_utf8(result).unwrap()
+    unsafe {
+        String::from_utf8_unchecked(result)
+    }
 }
 
 /// Unescape a Base64-URL string to a Base64-URL string. It is unsafe because the conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64-URL string by yourself.
@@ -188,7 +194,9 @@ pub fn unsafe_unescape(base64_str: &str) -> String {
         }
     }
 
-    String::from_utf8(result).unwrap()
+    unsafe {
+        String::from_utf8_unchecked(result)
+    }
 }
 
 /// Unescape a Base64-URL string to a Base64-URL string. It is unsafe because the conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64-URL string by yourself.
@@ -211,7 +219,9 @@ pub fn unsafe_unescape_owned(base64_str: String) -> String {
         }
     }
 
-    String::from_utf8(result).unwrap()
+    unsafe {
+        String::from_utf8_unchecked(result)
+    }
 }
 
 #[cfg(test)]
