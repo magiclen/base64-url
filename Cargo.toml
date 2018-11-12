@@ -15,4 +15,4 @@ travis-ci = { repository = "magiclen/base64-url", branch = "master" }
 appveyor = { repository = "magiclen/base64-url", branch = "master", service = "github" }
 
 [dependencies]
-base64 = "0.9.3"
+base64 = "0.10"
