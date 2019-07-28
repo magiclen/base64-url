@@ -1,6 +1,6 @@
 [package]
 name = "base64-url"
-version = "1.1.7"
+version = "1.1.8"
 authors = ["Magic Len <len@magiclen.org>"]
 repository = "https://github.com/magiclen/base64-url"
 homepage = "https://magiclen.org/base64-url"
@@ -12,7 +12,7 @@ license = "MIT"
 
 [badges.travis-ci]
 repository = "magiclen/base64-url"
- branch = "master"
+branch = "master"
 
 [dependencies]
 base64 = "0.10"
