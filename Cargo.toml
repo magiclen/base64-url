@@ -10,9 +10,9 @@ description= "Base64 encode, decode, escape and unescape for URL applications."
 readme = "README.md"
 license = "MIT"
 
-[badges]
-travis-ci = { repository = "magiclen/base64-url", branch = "master" }
-appveyor = { repository = "magiclen/base64-url", branch = "master", service = "github" }
+[badges.travis-ci]
+repository = "magiclen/base64-url"
+ branch = "master"
 
 [dependencies]
 base64 = "0.10"
