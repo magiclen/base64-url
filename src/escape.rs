@@ -12,7 +12,7 @@ pub fn unsafe_escape<S: Into<String>>(base64: S) -> String {
                 len = index;
                 break;
             }
-            _ => ()
+            _ => (),
         }
     }
 

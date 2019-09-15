@@ -9,5 +9,8 @@ fn encode() {
 fn encode_and_push_to_string() {
     let url = "https://magiclen.org/".to_string();
 
-    assert_eq!("https://magiclen.org/YXJ0aWNsZXM", base64_url::encode_and_push_to_string("articles", url));
+    assert_eq!(
+        "https://magiclen.org/YXJ0aWNsZXM",
+        base64_url::encode_and_push_to_string("articles", url)
+    );
 }

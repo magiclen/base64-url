@@ -6,7 +6,7 @@ pub fn unsafe_unescape<S: Into<String>>(base64_url: S) -> String {
         match *n {
             45 => *n = 43,
             95 => *n = 47,
-            _ => ()
+            _ => (),
         }
     }
 

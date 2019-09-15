@@ -9,7 +9,10 @@ pub fn encode_and_store_to_slice<T: ?Sized + AsRef<[u8]>>(input: &T, output: &mu
 }
 
 /// Encode data to a Base64-URL string and directly store into a String instance by concatenating them. It is usually for generating a URL.
-pub fn encode_and_push_to_string<T: ?Sized + AsRef<[u8]>, S: Into<String>>(input: &T, output: S) -> String {
+pub fn encode_and_push_to_string<T: ?Sized + AsRef<[u8]>, S: Into<String>>(
+    input: &T,
+    output: S,
+) -> String {
     let bytes = input.as_ref();
 
     let mut buffer = output.into().into_bytes();
