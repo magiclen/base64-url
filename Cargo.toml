@@ -7,7 +7,7 @@ repository = "https://github.com/magiclen/base64-url"
 homepage = "https://magiclen.org/base64-url"
 keywords = ["decode", "base64", "encode", "utf8", "url"]
 categories = ["encoding"]
-description= "Base64 encode, decode, escape and unescape for URL applications."
+description = "Base64 encode, decode, escape and unescape for URL applications."
 readme = "README.md"
 license = "MIT"
 
