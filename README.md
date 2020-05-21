@@ -39,7 +39,16 @@ extern crate base64_url;
 assert_eq!("SGVsbG8sIHdvcmxkIQ==", base64_url::unsafe_unescape("SGVsbG8sIHdvcmxkIQ"));
 ```
 
-Besides, in order to reduce the copy times of strings, you can also use `encode_and_push_to_string`, `decode_and_push_to_vec`, `unsafe_escape_owned` and `unsafe_unescape_owned` associated functions to use the same memory space.
+Besides, you can also use other `encode_*`, `decode_*`, `unsafe_escape_*`, `unsafe_unescape_*` associated functions to deal with more specific cases. For example,
+
+```rust
+extern crate base64_url;
+
+let hash = &[1, 2, 3, 4, 5, 6, 7, 8, 9];
+let url = String::from("https://example.com/?hash=");
+
+assert_eq!("https://example.com/?hash=AQIDBAUGBwgJ", base64_url::encode_and_push_to_string(hash, url));
+```
 
 ## Crates.io
 

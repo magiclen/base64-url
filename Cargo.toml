@@ -1,12 +1,12 @@
 [package]
 name = "base64-url"
-version = "1.1.14"
+version = "1.2.0"
 authors = ["Magic Len <len@magiclen.org>"]
 edition = "2018"
 repository = "https://github.com/magiclen/base64-url"
 homepage = "https://magiclen.org/base64-url"
 keywords = ["decode", "base64", "encode", "utf8", "url"]
-categories = ["encoding"]
+categories = ["no-std", "encoding"]
 description = "Base64 encode, decode, escape and unescape for URL applications."
 readme = "README.md"
 license = "MIT"
