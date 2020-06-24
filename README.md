@@ -45,9 +45,10 @@ Besides, you can also use other `encode_*`, `decode_*`, `escape_*`, `unescape_*`
 extern crate base64_url;
 
 let hash = &[1, 2, 3, 4, 5, 6, 7, 8, 9];
-let url = String::from("https://example.com/?hash=");
+let mut url = String::from("https://example.com/?hash=");
 
-assert_eq!("https://example.com/?hash=AQIDBAUGBwgJ", base64_url::encode_and_push_to_string(hash, url));
+assert_eq!("AQIDBAUGBwgJ", base64_url::encode_to_string(hash, &mut url));
+assert_eq!("https://example.com/?hash=AQIDBAUGBwgJ", url);
 ```
 
 ## Crates.io

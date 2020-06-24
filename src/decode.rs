@@ -6,31 +6,23 @@ pub fn decode<T: ?Sized + AsRef<[u8]>>(input: &T) -> Result<Vec<u8>, base64::Dec
     base64::decode_config(input, base64::URL_SAFE_NO_PAD)
 }
 
-/// Decode a Base64-URL string to data into a slice and return the valid length.
+/// Decode a Base64-URL string to data into a slice and return the slice with a valid length.
 #[inline]
-pub fn decode_to_slice<T: ?Sized + AsRef<[u8]>>(
+pub fn decode_in_place<'a, T: ?Sized + AsRef<[u8]>>(
     input: &T,
-    output: &mut [u8],
-) -> Result<usize, base64::DecodeError> {
-    base64::decode_config_slice(input, base64::URL_SAFE_NO_PAD, output)
+    output: &'a mut [u8],
+) -> Result<&'a [u8], base64::DecodeError> {
+    let length = base64::decode_config_slice(input, base64::URL_SAFE_NO_PAD, output)?;
+
+    Ok(&output[..length])
 }
 
-/// Decode a Base64-URL string to data and directly store into a Vec instance by concatenating them.
+/// Decode a Base64-URL string to data and directly store into a mutable `Vec<u8>` reference by concatenating them and return the slice of the decoded data.
 #[inline]
-pub fn decode_and_push_to_vec<T: ?Sized + AsRef<[u8]>>(
+pub fn decode_to_vec<'a, T: ?Sized + AsRef<[u8]>>(
     input: &T,
-    mut output: Vec<u8>,
-) -> Result<Vec<u8>, base64::DecodeError> {
-    decode_and_push_to_vec_mut(input, &mut output)?;
-
-    Ok(output)
-}
-
-/// Decode a Base64-URL string to data and directly store into a mutable Vec reference by concatenating them.
-pub fn decode_and_push_to_vec_mut<T: ?Sized + AsRef<[u8]>>(
-    input: &T,
-    output: &mut Vec<u8>,
-) -> Result<(), base64::DecodeError> {
+    output: &'a mut Vec<u8>,
+) -> Result<&'a [u8], base64::DecodeError> {
     let bytes = input.as_ref();
 
     let current_length = output.len();
@@ -49,11 +41,44 @@ pub fn decode_and_push_to_vec_mut<T: ?Sized + AsRef<[u8]>>(
         output.set_len(min_capacity);
     }
 
-    let original_len = decode_to_slice(bytes, &mut output[current_length..min_capacity])?;
+    let original_len = decode_in_place(bytes, &mut output[current_length..min_capacity])?.len();
 
     unsafe {
         output.set_len(current_length + original_len);
     }
+
+    Ok(&output[current_length..])
+}
+
+#[deprecated(since = "1.4.0", note = "Please use the `decode_in_place` function instead")]
+/// Decode a Base64-URL string to data into a slice and return the valid length.
+#[inline]
+pub fn decode_to_slice<T: ?Sized + AsRef<[u8]>>(
+    input: &T,
+    output: &mut [u8],
+) -> Result<usize, base64::DecodeError> {
+    Ok(decode_in_place(input, output)?.len())
+}
+
+#[deprecated(since = "1.4.0", note = "Please use the `decode_to_vec` function instead")]
+/// Decode a Base64-URL string to data and directly store into a Vec instance by concatenating them.
+#[inline]
+pub fn decode_and_push_to_vec<T: ?Sized + AsRef<[u8]>>(
+    input: &T,
+    mut output: Vec<u8>,
+) -> Result<Vec<u8>, base64::DecodeError> {
+    decode_to_vec(input, &mut output)?;
+
+    Ok(output)
+}
+
+#[deprecated(since = "1.4.0", note = "Please use the `decode_to_vec` function instead")]
+/// Decode a Base64-URL string to data and directly store into a mutable Vec reference by concatenating them.
+pub fn decode_and_push_to_vec_mut<T: ?Sized + AsRef<[u8]>>(
+    input: &T,
+    output: &mut Vec<u8>,
+) -> Result<(), base64::DecodeError> {
+    decode_to_vec(input, output)?;
 
     Ok(())
 }
