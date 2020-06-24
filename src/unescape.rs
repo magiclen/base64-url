@@ -31,7 +31,7 @@ pub fn unescape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64_url: &S) -> Cow<[u8]> {
     let padding = base64_url.len() & 0b11;
 
     if padding > 0 {
-        let mut base64 = Vec::with_capacity(base64_url.len());
+        let mut base64 = Vec::with_capacity(base64_url.len() + (4 - padding));
 
         for n in base64_url.iter().copied() {
             match n {
