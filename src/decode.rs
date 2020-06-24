@@ -33,11 +33,11 @@ pub fn decode_and_push_to_vec_mut<T: ?Sized + AsRef<[u8]>>(
 ) -> Result<(), base64::DecodeError> {
     let bytes = input.as_ref();
 
-    let current_len = output.len();
+    let current_length = output.len();
 
-    let original_max_len = (bytes.len() + 3) / 4 * 3;
+    let original_max_length = ((bytes.len() + 3) >> 2) * 3;
 
-    let min_capacity = current_len + original_max_len;
+    let min_capacity = current_length + original_max_length;
 
     let capacity = output.capacity();
 
@@ -49,10 +49,10 @@ pub fn decode_and_push_to_vec_mut<T: ?Sized + AsRef<[u8]>>(
         output.set_len(min_capacity);
     }
 
-    let original_len = decode_to_slice(bytes, &mut output[current_len..min_capacity])?;
+    let original_len = decode_to_slice(bytes, &mut output[current_length..min_capacity])?;
 
     unsafe {
-        output.set_len(current_len + original_len);
+        output.set_len(current_length + original_len);
     }
 
     Ok(())

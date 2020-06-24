@@ -31,11 +31,11 @@ pub fn encode_and_push_to_string_mut<T: ?Sized + AsRef<[u8]>>(input: &T, output:
 
     let buffer = unsafe { output.as_mut_vec() };
 
-    let current_len = buffer.len();
+    let current_length = buffer.len();
 
-    let base64_len = (bytes.len() * 4 + 2) / 3;
+    let base64_length = ((bytes.len() << 2) + 2) / 3;
 
-    let min_capacity = current_len + base64_len;
+    let min_capacity = current_length + base64_length;
 
     let capacity = buffer.capacity();
 
@@ -47,9 +47,9 @@ pub fn encode_and_push_to_string_mut<T: ?Sized + AsRef<[u8]>>(input: &T, output:
         buffer.set_len(min_capacity);
     }
 
-    let base64_len = encode_and_store_to_slice(bytes, &mut buffer[current_len..min_capacity]);
+    let base64_len = encode_and_store_to_slice(bytes, &mut buffer[current_length..min_capacity]);
 
     unsafe {
-        buffer.set_len(current_len + base64_len);
+        buffer.set_len(current_length + base64_len);
     }
 }
