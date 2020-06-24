@@ -23,23 +23,23 @@ extern crate base64_url;
 assert_eq!("Hello, world!".as_bytes().to_vec(), base64_url::decode("SGVsbG8sIHdvcmxkIQ").unwrap());
 ```
 
-Escape a Base64 string to a Base64-URL string. It is unsafe because the conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64 string by yourself.
+Escape a Base64 string to a Base64-URL string. The conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64 string by yourself.
 
 ```rust
 extern crate base64_url;
 
-assert_eq!("SGVsbG8sIHdvcmxkIQ", base64_url::unsafe_escape("SGVsbG8sIHdvcmxkIQ=="));
+assert_eq!("SGVsbG8sIHdvcmxkIQ", base64_url::escape("SGVsbG8sIHdvcmxkIQ=="));
 ```
 
-Unescape a Base64-URL string to a Base64-URL string. It is unsafe because the conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64-URL string by yourself.
+Unescape a Base64-URL string to a Base64-URL string. The conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64-URL string by yourself.
 
 ```rust
 extern crate base64_url;
 
-assert_eq!("SGVsbG8sIHdvcmxkIQ==", base64_url::unsafe_unescape("SGVsbG8sIHdvcmxkIQ"));
+assert_eq!("SGVsbG8sIHdvcmxkIQ==", base64_url::unescape("SGVsbG8sIHdvcmxkIQ"));
 ```
 
-Besides, you can also use other `encode_*`, `decode_*`, `unsafe_escape_*`, `unsafe_unescape_*` associated functions to deal with more specific cases. For example,
+Besides, you can also use other `encode_*`, `decode_*`, `escape_*`, `unescape_*` associated functions to deal with more specific cases. For example,
 
 ```rust
 extern crate base64_url;
