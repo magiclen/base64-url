@@ -6,7 +6,7 @@ fn encode() {
 }
 
 #[test]
-fn encode_and_push_to_string() {
+fn encode_to_string() {
     let mut url = "https://magiclen.org/".to_string();
 
     assert_eq!("YXJ0aWNsZXM", base64_url::encode_to_string("articles", &mut url));

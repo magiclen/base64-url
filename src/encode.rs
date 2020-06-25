@@ -34,19 +34,13 @@ pub fn encode_to_vec<'a, T: ?Sized + AsRef<[u8]>>(input: &T, output: &'a mut Vec
 
     let base64_length = ((bytes.len() << 2) + 2) / 3;
 
-    let min_capacity = current_length + base64_length;
-
-    let capacity = output.capacity();
-
-    if capacity < min_capacity {
-        output.reserve(min_capacity - capacity);
-    }
+    output.reserve(base64_length);
 
     unsafe {
-        output.set_len(min_capacity);
+        output.set_len(current_length + base64_length);
     }
 
-    let base64_length = encode_in_place(bytes, &mut output[current_length..min_capacity]).len();
+    let base64_length = encode_in_place(bytes, &mut output[current_length..]).len();
 
     unsafe {
         output.set_len(current_length + base64_length);

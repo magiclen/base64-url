@@ -29,22 +29,16 @@ pub fn decode_to_vec<'a, T: ?Sized + AsRef<[u8]>>(
 
     let original_max_length = ((bytes.len() + 3) >> 2) * 3;
 
-    let min_capacity = current_length + original_max_length;
-
-    let capacity = output.capacity();
-
-    if capacity < min_capacity {
-        output.reserve(min_capacity - capacity);
-    }
+    output.reserve(original_max_length);
 
     unsafe {
-        output.set_len(min_capacity);
+        output.set_len(current_length + original_max_length);
     }
 
-    let original_len = decode_in_place(bytes, &mut output[current_length..min_capacity])?.len();
+    let original_length = decode_in_place(bytes, &mut output[current_length..])?.len();
 
     unsafe {
-        output.set_len(current_length + original_len);
+        output.set_len(current_length + original_length);
     }
 
     Ok(&output[current_length..])

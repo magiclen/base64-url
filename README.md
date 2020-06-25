@@ -20,7 +20,7 @@ Decode a Base64-URL string to data.
 ```rust
 extern crate base64_url;
 
-assert_eq!("Hello, world!".as_bytes().to_vec(), base64_url::decode("SGVsbG8sIHdvcmxkIQ").unwrap());
+assert_eq!(b"Hello, world!", base64_url::decode("SGVsbG8sIHdvcmxkIQ").unwrap().as_slice());
 ```
 
 Escape a Base64 string to a Base64-URL string. The conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64 string by yourself.
