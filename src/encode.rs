@@ -25,7 +25,7 @@ pub fn encode_to_string<'a, T: ?Sized + AsRef<[u8]>>(input: &T, output: &'a mut 
     unsafe { from_utf8_unchecked(base64_url) }
 }
 
-/// Encode data to Base64-URL data and directly store into a mutable `Vec<u8>` reference by concatenating them and return the slice of the Base64-URL data. It is usually for generating a URL. The
+/// Encode data to Base64-URL data and directly store into a mutable `Vec<u8>` reference by concatenating them and return the slice of the Base64-URL data. It is usually for generating a URL.
 #[inline]
 pub fn encode_to_vec<'a, T: ?Sized + AsRef<[u8]>>(input: &T, output: &'a mut Vec<u8>) -> &'a [u8] {
     let bytes = input.as_ref();
