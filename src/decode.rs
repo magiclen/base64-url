@@ -6,17 +6,6 @@ pub fn decode<T: ?Sized + AsRef<[u8]>>(input: &T) -> Result<Vec<u8>, base64::Dec
     base64::decode_config(input, base64::URL_SAFE_NO_PAD)
 }
 
-/// Decode a Base64-URL string to data into a slice and return the slice with a valid length.
-#[inline]
-pub fn decode_in_place<'a, T: ?Sized + AsRef<[u8]>>(
-    input: &T,
-    output: &'a mut [u8],
-) -> Result<&'a [u8], base64::DecodeError> {
-    let length = base64::decode_config_slice(input, base64::URL_SAFE_NO_PAD, output)?;
-
-    Ok(&output[..length])
-}
-
 /// Decode a Base64-URL string to data and directly store into a mutable `Vec<u8>` reference by concatenating them and return the slice of the decoded data.
 #[inline]
 pub fn decode_to_vec<'a, T: ?Sized + AsRef<[u8]>>(
@@ -35,7 +24,7 @@ pub fn decode_to_vec<'a, T: ?Sized + AsRef<[u8]>>(
         output.set_len(current_length + original_max_length);
     }
 
-    let original_length = decode_in_place(bytes, &mut output[current_length..])?.len();
+    let original_length = decode_to_slice(bytes, &mut output[current_length..])?.len();
 
     unsafe {
         output.set_len(current_length + original_length);
@@ -44,14 +33,15 @@ pub fn decode_to_vec<'a, T: ?Sized + AsRef<[u8]>>(
     Ok(&output[current_length..])
 }
 
-#[deprecated(since = "1.4.0", note = "Please use the `decode_in_place` function instead")]
-/// Decode a Base64-URL string to data into a slice and return the valid length.
+/// Decode a Base64-URL string to data into a slice and return the slice with a valid length.
 #[inline]
-pub fn decode_to_slice<T: ?Sized + AsRef<[u8]>>(
+pub fn decode_to_slice<'a, T: ?Sized + AsRef<[u8]>>(
     input: &T,
-    output: &mut [u8],
-) -> Result<usize, base64::DecodeError> {
-    Ok(decode_in_place(input, output)?.len())
+    output: &'a mut [u8],
+) -> Result<&'a [u8], base64::DecodeError> {
+    let length = base64::decode_config_slice(input, base64::URL_SAFE_NO_PAD, output)?;
+
+    Ok(&output[..length])
 }
 
 #[deprecated(since = "1.4.0", note = "Please use the `decode_to_vec` function instead")]
