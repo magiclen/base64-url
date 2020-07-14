@@ -28,41 +28,71 @@ pub fn escape<S: ?Sized + AsRef<str>>(base64: &S) -> Cow<str> {
 pub fn escape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64: &S) -> Cow<[u8]> {
     let base64 = base64.as_ref();
 
-    let mut need_replace = None;
+    let length = base64.len();
 
-    for (index, n) in base64.iter().enumerate() {
-        match n {
-            43 | 47 => {
-                need_replace = Some(index);
+    let mut p = 0;
 
-                break;
+    let first = loop {
+        if p == length {
+            return Cow::from(base64);
+        }
+
+        let e = base64[p];
+
+        match e {
+            43 => {
+                break 45;
+            }
+            47 => {
+                break 95;
             }
             61 => {
-                return Cow::from(&base64[..index]);
+                return Cow::from(&base64[..p]);
             }
             _ => (),
         }
-    }
 
-    match need_replace {
-        Some(index) => {
-            let mut base64_url = Vec::with_capacity(base64.len());
+        p += 1;
+    };
 
-            base64_url.extend_from_slice(&base64[..index]);
+    let mut base64_url = Vec::with_capacity(base64.len());
 
-            for n in base64[index..].iter().copied() {
-                match n {
-                    43 => base64_url.push(45),
-                    47 => base64_url.push(95),
-                    61 => break,
-                    _ => base64_url.push(n),
-                }
-            }
+    base64_url.extend_from_slice(&base64[..p]);
+    base64_url.push(first);
 
-            Cow::from(base64_url)
+    let mut start = p;
+    p += 1;
+
+    loop {
+        if p == length {
+            break;
         }
-        None => Cow::from(base64),
+
+        let e = base64[p];
+
+        match e {
+            43 => {
+                base64_url.extend_from_slice(&base64[start..p]);
+                start = p + 1;
+
+                base64_url.push(45);
+            }
+            47 => {
+                base64_url.extend_from_slice(&base64[start..p]);
+                start = p + 1;
+
+                base64_url.push(95);
+            }
+            61 => break,
+            _ => (),
+        }
+
+        p += 1;
     }
+
+    base64_url.extend_from_slice(&base64[start..p]);
+
+    Cow::from(base64_url)
 }
 
 /// In-place escape a Base64 string to a Base64-URL string. The conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64 string by yourself.

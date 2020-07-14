@@ -27,19 +27,43 @@ pub fn unescape<S: ?Sized + AsRef<str>>(base64_url: &S) -> Cow<str> {
 /// Unescape Base64-URL data to Base64 data. The conversion is not concerning with Base64 decoding. You need to make sure the input Base64-URL data is correct by yourself.
 pub fn unescape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64_url: &S) -> Cow<[u8]> {
     let base64_url = base64_url.as_ref();
+    let length = base64_url.len();
 
-    let padding = base64_url.len() & 0b11;
+    let padding = length & 0b11;
 
     if padding > 0 {
         let mut base64 = Vec::with_capacity(base64_url.len() + (4 - padding));
 
-        for n in base64_url.iter().copied() {
-            match n {
-                45 => base64.push(43),
-                95 => base64.push(47),
-                _ => base64.push(n),
+        let mut p = 0;
+        let mut start = 0;
+
+        loop {
+            if p == length {
+                break;
             }
+
+            let e = base64_url[p];
+
+            match e {
+                45 => {
+                    base64.extend_from_slice(&base64_url[start..p]);
+                    start = p + 1;
+
+                    base64.push(43);
+                }
+                95 => {
+                    base64.extend_from_slice(&base64_url[start..p]);
+                    start = p + 1;
+
+                    base64.push(47);
+                }
+                _ => (),
+            }
+
+            p += 1;
         }
+
+        base64.extend_from_slice(&base64_url[start..p]);
 
         for _ in padding..4 {
             base64.push(61);
@@ -47,37 +71,65 @@ pub fn unescape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64_url: &S) -> Cow<[u8]> {
 
         Cow::from(base64)
     } else {
-        let mut need_replace = None;
+        let mut p = 0;
 
-        for (index, n) in base64_url.iter().enumerate() {
-            match n {
-                45 | 95 => {
-                    need_replace = Some(index);
+        let first = loop {
+            if p == length {
+                return Cow::from(base64_url);
+            }
 
-                    break;
+            let e = base64_url[p];
+
+            match e {
+                45 => {
+                    break 43;
+                }
+                95 => {
+                    break 47;
                 }
                 _ => (),
             }
-        }
 
-        match need_replace {
-            Some(index) => {
-                let mut base64 = Vec::with_capacity(base64_url.len());
+            p += 1;
+        };
 
-                base64.extend_from_slice(&base64_url[..index]);
+        let mut base64 = Vec::with_capacity(base64_url.len());
 
-                for n in base64_url[index..].iter().copied() {
-                    match n {
-                        45 => base64.push(43),
-                        95 => base64.push(47),
-                        _ => base64.push(n),
-                    }
-                }
+        base64.extend_from_slice(&base64_url[..p]);
+        base64.push(first);
 
-                Cow::from(base64)
+        let mut start = p;
+        p += 1;
+
+        loop {
+            if p == length {
+                break;
             }
-            None => Cow::from(base64_url),
+
+            let e = base64_url[p];
+
+            match e {
+                45 => {
+                    base64.extend_from_slice(&base64_url[start..p]);
+                    start = p + 1;
+
+                    base64.push(43);
+                }
+                95 => {
+                    base64.extend_from_slice(&base64_url[start..p]);
+                    start = p + 1;
+
+                    base64.push(47);
+                }
+                _ => (),
+            }
+
+            p += 1;
         }
+
+        base64.extend_from_slice(&base64_url[start..p]);
+
+        Cow::from(base64)
     }
 }
 
