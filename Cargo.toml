@@ -1,6 +1,6 @@
 [package]
 name = "base64-url"
-version = "1.4.7"
+version = "1.4.8"
 authors = ["Magic Len <len@magiclen.org>"]
 edition = "2018"
 repository = "https://github.com/magiclen/base64-url"
@@ -17,4 +17,4 @@ repository = "magiclen/base64-url"
 branch = "master"
 
 [dependencies]
-base64 = "0.12"
+base64 = "0.13"
