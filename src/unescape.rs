@@ -32,7 +32,9 @@ pub fn unescape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64_url: &S) -> Cow<[u8]> {
     let padding = length & 0b11;
 
     if padding > 0 {
-        let mut base64 = Vec::with_capacity(base64_url.len() + (4 - padding));
+        let new_size = base64_url.len() + (4 - padding);
+
+        let mut base64 = Vec::with_capacity(new_size);
 
         let mut p = 0;
         let mut start = 0;
@@ -65,9 +67,7 @@ pub fn unescape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64_url: &S) -> Cow<[u8]> {
 
         base64.extend_from_slice(&base64_url[start..p]);
 
-        for _ in padding..4 {
-            base64.push(61);
-        }
+        base64.resize(new_size, 61);
 
         Cow::from(base64)
     } else {
@@ -173,9 +173,9 @@ pub fn unescape_u8_slice_try_in_place<S: ?Sized + AsMut<[u8]>>(base64_url: &mut 
     if padding > 0 {
         let mut base64_url_vec = base64_url.to_vec();
 
-        for _ in padding..4 {
-            base64_url_vec.push(61);
-        }
+        let new_size = base64_url.len() + (4 - padding);
+
+        base64_url_vec.resize(new_size, 61);
 
         Cow::from(base64_url_vec)
     } else {
