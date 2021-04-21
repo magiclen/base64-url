@@ -1,6 +1,6 @@
 [package]
 name = "base64-url"
-version = "1.4.9"
+version = "1.4.10"
 authors = ["Magic Len <len@magiclen.org>"]
 edition = "2018"
 repository = "https://github.com/magiclen/base64-url"
@@ -11,10 +11,6 @@ description = "Base64 encode, decode, escape and unescape for URL applications."
 readme = "README.md"
 license = "MIT"
 include = ["src/**/*", "Cargo.toml", "README.md", "LICENSE"]
-
-[badges.travis-ci]
-repository = "magiclen/base64-url"
-branch = "master"
 
 [dependencies]
 base64 = "0.13"

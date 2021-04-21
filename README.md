@@ -1,7 +1,7 @@
 Base64 URL
 ====================
 
-[![Build Status](https://travis-ci.org/magiclen/base64-url.svg?branch=master)](https://travis-ci.org/magiclen/base64-url)
+[![CI](https://github.com/magiclen/base64-url/actions/workflows/ci.yml/badge.svg)](https://github.com/magiclen/base64-url/actions/workflows/ci.yml)
 
 Base64 encode, decode, escape and unescape for URL applications.
 
