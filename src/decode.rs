@@ -1,5 +1,3 @@
-use crate::alloc::vec::Vec;
-
 /// Decode a Base64-URL string to data.
 #[inline]
 pub fn decode<T: ?Sized + AsRef<[u8]>>(input: &T) -> Result<Vec<u8>, base64::DecodeError> {

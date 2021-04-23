@@ -50,9 +50,6 @@ assert_eq!("https://example.com/?hash=AQIDBAUGBwgJ", url);
 ```
 */
 
-#![no_std]
-
-extern crate alloc;
 pub extern crate base64;
 
 mod decode;

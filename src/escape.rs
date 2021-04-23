@@ -1,8 +1,5 @@
-use core::str::from_utf8_unchecked;
-
-use crate::alloc::borrow::Cow;
-use crate::alloc::string::String;
-use crate::alloc::vec::Vec;
+use std::borrow::Cow;
+use std::str::from_utf8_unchecked;
 
 /// Escape a Base64 string to a Base64-URL string. The conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64 string by yourself.
 #[inline]

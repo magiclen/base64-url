@@ -1,7 +1,4 @@
-use core::str::from_utf8_unchecked;
-
-use crate::alloc::string::String;
-use crate::alloc::vec::Vec;
+use std::str::from_utf8_unchecked;
 
 /// Encode data to a Base64-URL string.
 #[inline]
