@@ -25,6 +25,7 @@ pub fn encode_to_vec<'a, T: ?Sized + AsRef<[u8]>>(input: &T, output: &'a mut Vec
 
     output.reserve(base64_length);
 
+    #[allow(clippy::uninit_vec)]
     unsafe {
         output.set_len(current_length + base64_length);
     }

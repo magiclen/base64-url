@@ -18,6 +18,7 @@ pub fn decode_to_vec<'a, T: ?Sized + AsRef<[u8]>>(
 
     output.reserve(original_max_length);
 
+    #[allow(clippy::uninit_vec)]
     unsafe {
         output.set_len(current_length + original_max_length);
     }
