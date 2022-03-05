@@ -1,5 +1,3 @@
-extern crate base64_url;
-
 use base64_url::base64;
 
 #[test]

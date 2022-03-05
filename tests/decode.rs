@@ -1,5 +1,3 @@
-extern crate base64_url;
-
 #[test]
 fn decode() {
     assert_eq!(
