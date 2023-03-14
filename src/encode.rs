@@ -1,9 +1,14 @@
-use std::str::from_utf8_unchecked;
+use core::str::from_utf8_unchecked;
+
+use alloc::string::String;
+use alloc::vec::Vec;
+
+use base64::Engine;
 
 /// Encode data to a Base64-URL string.
 #[inline]
 pub fn encode<T: ?Sized + AsRef<[u8]>>(input: &T) -> String {
-    base64::encode_config(input, base64::URL_SAFE_NO_PAD)
+    base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(input)
 }
 
 /// Encode data to a Base64-URL string and directly store to a mutable `String` reference by concatenating them and return the slice of the Base64-URL string. It is usually for generating a URL.
@@ -30,7 +35,7 @@ pub fn encode_to_vec<'a, T: ?Sized + AsRef<[u8]>>(input: &T, output: &'a mut Vec
         output.set_len(current_length + base64_length);
     }
 
-    let base64_length = encode_to_slice(bytes, &mut output[current_length..]).len();
+    let base64_length = encode_to_slice(bytes, &mut output[current_length..]).unwrap().len();
 
     unsafe {
         output.set_len(current_length + base64_length);
@@ -41,35 +46,11 @@ pub fn encode_to_vec<'a, T: ?Sized + AsRef<[u8]>>(input: &T, output: &'a mut Vec
 
 /// Encode data to a Base64-URL string to a slice and return the slice with a valid length.
 #[inline]
-pub fn encode_to_slice<'a, T: ?Sized + AsRef<[u8]>>(input: &T, output: &'a mut [u8]) -> &'a [u8] {
-    let length = base64::encode_config_slice(input, base64::URL_SAFE_NO_PAD, output);
-
-    &output[..length]
-}
-
-#[deprecated(since = "1.4.0", note = "Please use the `encode_to_slice` function instead")]
-/// Encode data to a Base64-URL string into a slice and return the valid length.
-#[inline]
-pub fn encode_and_store_to_slice<T: ?Sized + AsRef<[u8]>>(input: &T, output: &mut [u8]) -> usize {
-    encode_to_slice(input, output).len()
-}
-
-#[deprecated(since = "1.4.0", note = "Please use the `encode_to_string` function instead")]
-/// Encode data to a Base64-URL string and directly store into a String instance by concatenating them. It is usually for generating a URL.
-#[inline]
-pub fn encode_and_push_to_string<T: ?Sized + AsRef<[u8]>, S: Into<String>>(
+pub fn encode_to_slice<'a, T: ?Sized + AsRef<[u8]>>(
     input: &T,
-    output: S,
-) -> String {
-    let mut output = output.into();
+    output: &'a mut [u8],
+) -> Result<&'a [u8], base64::EncodeSliceError> {
+    let length = base64::engine::general_purpose::URL_SAFE_NO_PAD.encode_slice(input, output)?;
 
-    encode_to_string(input, &mut output);
-
-    output
-}
-
-#[deprecated(since = "1.4.0", note = "Please use the `encode_to_string` function instead")]
-/// Encode data to a Base64-URL string and directly store into a mutable String reference by concatenating them. It is usually for generating a URL.
-pub fn encode_and_push_to_string_mut<T: ?Sized + AsRef<[u8]>>(input: &T, output: &mut String) {
-    encode_to_string(input, output);
+    Ok(&output[..length])
 }

@@ -1,6 +1,9 @@
-use std::borrow::Cow;
-use std::mem::swap;
-use std::str::from_utf8_unchecked;
+use core::mem::swap;
+use core::str::from_utf8_unchecked;
+
+use alloc::borrow::Cow;
+use alloc::string::String;
+use alloc::vec::Vec;
 
 /// Unescape a Base64-URL string to a Base64 string. The conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64-URL string by yourself.
 #[inline]

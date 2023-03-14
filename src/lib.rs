@@ -38,7 +38,21 @@ let mut url = String::from("https://example.com/?hash=");
 assert_eq!("AQIDBAUGBwgJ", base64_url::encode_to_string(hash, &mut url));
 assert_eq!("https://example.com/?hash=AQIDBAUGBwgJ", url);
 ```
+
+## No Std
+
+Disable the default features to compile this crate without std.
+
+```toml
+[dependencies.base64-url]
+version = "*"
+default-features = false
+```
 */
+
+#![cfg_attr(not(feature = "std"), no_std)]
+
+extern crate alloc;
 
 pub extern crate base64;
 
