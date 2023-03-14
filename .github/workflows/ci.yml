@@ -53,6 +53,5 @@ jobs:
           profile: minimal
           toolchain: ${{ matrix.toolchain }}
           override: true
-      - run: cargo build ${{ matrix.features }}
       - run: cargo test ${{ matrix.features }}
       - run: cargo doc ${{ matrix.features }}
