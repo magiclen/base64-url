@@ -1,7 +1,5 @@
+use alloc::{string::String, vec::Vec};
 use core::str::from_utf8_unchecked;
-
-use alloc::string::String;
-use alloc::vec::Vec;
 
 use base64::Engine;
 

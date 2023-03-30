@@ -1,6 +1,6 @@
-use base64::Engine;
-
 use alloc::vec::Vec;
+
+use base64::Engine;
 
 /// Decode a Base64-URL string to data.
 #[inline]

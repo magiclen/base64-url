@@ -1,8 +1,5 @@
+use alloc::{borrow::Cow, string::String, vec::Vec};
 use core::str::from_utf8_unchecked;
-
-use alloc::borrow::Cow;
-use alloc::string::String;
-use alloc::vec::Vec;
 
 /// Escape a Base64 string to a Base64-URL string. The conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64 string by yourself.
 #[inline]
@@ -14,12 +11,12 @@ pub fn escape<S: ?Sized + AsRef<str>>(base64: &S) -> Cow<str> {
             let base64_url = unsafe { String::from_utf8_unchecked(base64_url) };
 
             Cow::from(base64_url)
-        }
+        },
         Cow::Borrowed(base64_url) => {
             let base64_url = unsafe { from_utf8_unchecked(base64_url) };
 
             Cow::from(base64_url)
-        }
+        },
     }
 }
 
@@ -42,13 +39,13 @@ pub fn escape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64: &S) -> Cow<[u8]> {
         match e {
             43 => {
                 break 45;
-            }
+            },
             47 => {
                 break 95;
-            }
+            },
             61 => {
                 return Cow::from(&base64[..p]);
-            }
+            },
             _ => (),
         }
 
@@ -76,13 +73,13 @@ pub fn escape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64: &S) -> Cow<[u8]> {
                 start = p + 1;
 
                 base64_url.push(45);
-            }
+            },
             47 => {
                 base64_url.extend_from_slice(&base64[start..p]);
                 start = p + 1;
 
                 base64_url.push(95);
-            }
+            },
             61 => break,
             _ => (),
         }
@@ -131,7 +128,7 @@ pub fn escape_u8_slice_in_place<S: ?Sized + AsMut<[u8]>>(base64: &mut S) -> &[u8
             61 => {
                 len = index;
                 break;
-            }
+            },
             _ => (),
         }
     }

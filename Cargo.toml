@@ -3,12 +3,12 @@ name = "base64-url"
 version = "2.0.0"
 authors = ["Magic Len <len@magiclen.org>"]
 edition = "2021"
+rust-version = "1.57"
 repository = "https://github.com/magiclen/base64-url"
 homepage = "https://magiclen.org/base64-url"
 keywords = ["decode", "base64", "encode", "utf8", "url"]
 categories = ["no-std", "encoding"]
 description = "Base64 encode, decode, escape and unescape for URL applications."
-readme = "README.md"
 license = "MIT"
 include = ["src/**/*", "Cargo.toml", "README.md", "LICENSE"]
 

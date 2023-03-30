@@ -1,9 +1,5 @@
-use core::mem::swap;
-use core::str::from_utf8_unchecked;
-
-use alloc::borrow::Cow;
-use alloc::string::String;
-use alloc::vec::Vec;
+use alloc::{borrow::Cow, string::String, vec::Vec};
+use core::{mem::swap, str::from_utf8_unchecked};
 
 /// Unescape a Base64-URL string to a Base64 string. The conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64-URL string by yourself.
 #[inline]
@@ -15,12 +11,12 @@ pub fn unescape<S: ?Sized + AsRef<str>>(base64_url: &S) -> Cow<str> {
             let base64 = unsafe { String::from_utf8_unchecked(base64) };
 
             Cow::from(base64)
-        }
+        },
         Cow::Borrowed(base64) => {
             let base64 = unsafe { from_utf8_unchecked(base64) };
 
             Cow::from(base64)
-        }
+        },
     }
 }
 
@@ -52,13 +48,13 @@ pub fn unescape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64_url: &S) -> Cow<[u8]> {
                     start = p + 1;
 
                     base64.push(43);
-                }
+                },
                 95 => {
                     base64.extend_from_slice(&base64_url[start..p]);
                     start = p + 1;
 
                     base64.push(47);
-                }
+                },
                 _ => (),
             }
 
@@ -83,10 +79,10 @@ pub fn unescape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64_url: &S) -> Cow<[u8]> {
             match e {
                 45 => {
                     break 43;
-                }
+                },
                 95 => {
                     break 47;
-                }
+                },
                 _ => (),
             }
 
@@ -114,13 +110,13 @@ pub fn unescape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64_url: &S) -> Cow<[u8]> {
                     start = p + 1;
 
                     base64.push(43);
-                }
+                },
                 95 => {
                     base64.extend_from_slice(&base64_url[start..p]);
                     start = p + 1;
 
                     base64.push(47);
-                }
+                },
                 _ => (),
             }
 
