@@ -1,6 +1,6 @@
 [package]
 name = "base64-url"
-version = "2.0.0"
+version = "2.0.1"
 authors = ["Magic Len <len@magiclen.org>"]
 edition = "2021"
 rust-version = "1.57"
@@ -16,5 +16,6 @@ include = ["src/**/*", "Cargo.toml", "README.md", "LICENSE"]
 base64 = { version = "0.21", default-features = false, features = ["alloc"] }
 
 [features]
-default = ["std"]
-std = ["base64/std"]
+default = []
+
+std = [] # deprecated
