@@ -3,7 +3,7 @@ use core::{mem::swap, str::from_utf8_unchecked};
 
 /// Unescape a Base64-URL string to a Base64 string. The conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64-URL string by yourself.
 #[inline]
-pub fn unescape<S: ?Sized + AsRef<str>>(base64_url: &S) -> Cow<str> {
+pub fn unescape<S: ?Sized + AsRef<str>>(base64_url: &S) -> Cow<'_, str> {
     let base64_url = base64_url.as_ref();
 
     match unescape_u8_slice(base64_url) {
@@ -21,7 +21,7 @@ pub fn unescape<S: ?Sized + AsRef<str>>(base64_url: &S) -> Cow<str> {
 }
 
 /// Unescape Base64-URL data to Base64 data. The conversion is not concerning with Base64 decoding. You need to make sure the input Base64-URL data is correct by yourself.
-pub fn unescape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64_url: &S) -> Cow<[u8]> {
+pub fn unescape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64_url: &S) -> Cow<'_, [u8]> {
     let base64_url = base64_url.as_ref();
     let length = base64_url.len();
 
@@ -94,8 +94,9 @@ pub fn unescape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64_url: &S) -> Cow<[u8]> {
         base64.extend_from_slice(&base64_url[..p]);
         base64.push(first);
 
-        let mut start = p;
         p += 1;
+
+        let mut start = p;
 
         loop {
             if p == length {
@@ -153,7 +154,9 @@ pub fn unescape_vec_in_place(base64_url: &mut Vec<u8>) -> &[u8] {
 
 /// Unescape Base64-URL data to Base64 data and try to do it in-place. It is unsafe because the conversion is not concerning with Base64 decoding. You need to make sure the input Base64-URL data is correct by yourself.
 #[inline]
-pub fn unescape_u8_slice_try_in_place<S: ?Sized + AsMut<[u8]>>(base64_url: &mut S) -> Cow<[u8]> {
+pub fn unescape_u8_slice_try_in_place<S: ?Sized + AsMut<[u8]>>(
+    base64_url: &mut S,
+) -> Cow<'_, [u8]> {
     let base64_url = base64_url.as_mut();
 
     for n in base64_url.iter_mut() {
@@ -208,6 +211,6 @@ pub fn unsafe_unescape_vec(base64_url: &mut Vec<u8>) {
     note = "Please use the `unescape_u8_slice_try_in_place` function instead"
 )]
 /// Unescape Base64-URL data to Base64 data. It is unsafe because the conversion is not concerning with Base64 decoding. You need to make sure the input Base64-URL data is correct by yourself.
-pub fn unsafe_unescape_u8_slice<S: ?Sized + AsMut<[u8]>>(base64_url: &mut S) -> Cow<[u8]> {
+pub fn unsafe_unescape_u8_slice<S: ?Sized + AsMut<[u8]>>(base64_url: &mut S) -> Cow<'_, [u8]> {
     unescape_u8_slice_try_in_place(base64_url)
 }

@@ -3,7 +3,7 @@ use core::str::from_utf8_unchecked;
 
 /// Escape a Base64 string to a Base64-URL string. The conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64 string by yourself.
 #[inline]
-pub fn escape<S: ?Sized + AsRef<str>>(base64: &S) -> Cow<str> {
+pub fn escape<S: ?Sized + AsRef<str>>(base64: &S) -> Cow<'_, str> {
     let base64 = base64.as_ref();
 
     match escape_u8_slice(base64) {
@@ -22,7 +22,7 @@ pub fn escape<S: ?Sized + AsRef<str>>(base64: &S) -> Cow<str> {
 
 /// Escape Base64 data to Base64-URL data. The conversion is not concerning with Base64 decoding. You need to make sure the input Base64 data is correct by yourself.
 #[inline]
-pub fn escape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64: &S) -> Cow<[u8]> {
+pub fn escape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64: &S) -> Cow<'_, [u8]> {
     let base64 = base64.as_ref();
 
     let length = base64.len();
@@ -57,8 +57,9 @@ pub fn escape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64: &S) -> Cow<[u8]> {
     base64_url.extend_from_slice(&base64[..p]);
     base64_url.push(first);
 
-    let mut start = p;
     p += 1;
+
+    let mut start = p;
 
     loop {
         if p == length {

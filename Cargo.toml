@@ -1,6 +1,6 @@
 [package]
 name = "base64-url"
-version = "3.0.0"
+version = "3.0.1"
 authors = ["Magic Len <len@magiclen.org>"]
 edition = "2021"
 rust-version = "1.57"
@@ -16,5 +16,5 @@ include = ["src/**/*", "Cargo.toml", "README.md", "LICENSE"]
 base64 = { version = "0.22", default-features = false, features = ["alloc"] }
 
 [features]
-default = ["std"]
+default = []
 std = ["base64/std"] # Only for the `base64` crate itself. This crate doesn't use the `std` feature.
