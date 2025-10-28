@@ -41,14 +41,14 @@ assert_eq!("AQIDBAUGBwgJ", base64_url::encode_to_string(hash, &mut url));
 assert_eq!("https://example.com/?hash=AQIDBAUGBwgJ", url);
 ```
 
-## No Std
+## Std
 
-Disable the default features to compile this crate without std.
+Enable the `std` features to compile this crate with std.
 
 ```toml
 [dependencies.base64-url]
 version = "*"
-default-features = false
+features = ["std"]
 ```
 
 ## Crates.io
