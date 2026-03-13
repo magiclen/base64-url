@@ -27,7 +27,18 @@ pub fn decode_to_vec<'a, T: ?Sized + AsRef<[u8]>>(
         output.set_len(current_length + original_max_length);
     }
 
-    let original_length = decode_to_slice(bytes, &mut output[current_length..])?.len();
+    let original_length = match decode_to_slice(bytes, &mut output[current_length..]) {
+        Ok(slice) => slice.len(),
+        Err(error) => {
+            // rollback length
+
+            unsafe {
+                output.set_len(current_length);
+            }
+
+            return Err(error);
+        },
+    };
 
     unsafe {
         output.set_len(current_length + original_length);
