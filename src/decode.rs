@@ -1,4 +1,5 @@
 use alloc::vec::Vec;
+use core::slice::from_raw_parts_mut;
 
 use base64::Engine;
 
@@ -22,24 +23,16 @@ pub fn decode_to_vec<'a, T: ?Sized + AsRef<[u8]>>(
 
     output.reserve(original_max_length);
 
-    #[allow(clippy::uninit_vec)]
-    unsafe {
-        output.set_len(current_length + original_max_length);
-    }
+    let original_length = {
+        let spare = output.spare_capacity_mut();
 
-    let original_length = match decode_to_slice(bytes, &mut output[current_length..]) {
-        Ok(slice) => slice.len(),
-        Err(error) => {
-            // rollback length
+        let buf: &mut [u8] =
+            unsafe { from_raw_parts_mut(spare.as_mut_ptr().cast::<u8>(), original_max_length) };
 
-            unsafe {
-                output.set_len(current_length);
-            }
-
-            return Err(error);
-        },
+        decode_to_slice(bytes, buf)?.len()
     };
 
+    #[allow(clippy::uninit_vec)]
     unsafe {
         output.set_len(current_length + original_length);
     }

@@ -58,7 +58,7 @@ jobs:
           - macos-latest
           - windows-latest
         toolchain:
-          - 1.57
+          - "1.60"
         features:
           -
           - --features std
