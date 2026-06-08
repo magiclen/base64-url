@@ -37,13 +37,13 @@ pub fn escape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64: &S) -> Cow<'_, [u8]> {
         let e = base64[p];
 
         match e {
-            43 => {
-                break 45;
+            b'+' => {
+                break b'-';
             },
-            47 => {
-                break 95;
+            b'/' => {
+                break b'_';
             },
-            61 => {
+            b'=' => {
                 return Cow::from(&base64[..p]);
             },
             _ => (),
@@ -69,19 +69,19 @@ pub fn escape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64: &S) -> Cow<'_, [u8]> {
         let e = base64[p];
 
         match e {
-            43 => {
+            b'+' => {
                 base64_url.extend_from_slice(&base64[start..p]);
                 start = p + 1;
 
-                base64_url.push(45);
+                base64_url.push(b'-');
             },
-            47 => {
+            b'/' => {
                 base64_url.extend_from_slice(&base64[start..p]);
                 start = p + 1;
 
-                base64_url.push(95);
+                base64_url.push(b'_');
             },
-            61 => break,
+            b'=' => break,
             _ => (),
         }
 
@@ -124,9 +124,9 @@ pub fn escape_u8_slice_in_place<S: ?Sized + AsMut<[u8]>>(base64: &mut S) -> &[u8
 
     for (index, n) in base64.iter_mut().enumerate() {
         match *n {
-            43 => *n = 45,
-            47 => *n = 95,
-            61 => {
+            b'+' => *n = b'-',
+            b'/' => *n = b'_',
+            b'=' => {
                 len = index;
                 break;
             },

@@ -23,7 +23,7 @@ Escape a Base64 string to a Base64-URL string. The conversion is not concerning 
 assert_eq!("SGVsbG8sIHdvcmxkIQ", base64_url::escape("SGVsbG8sIHdvcmxkIQ=="));
 ```
 
-Unescape a Base64-URL string to a Base64-URL string. The conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64-URL string by yourself.
+Unescape a Base64-URL string to a Base64 string. The conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64-URL string by yourself.
 
 ```rust
 assert_eq!("SGVsbG8sIHdvcmxkIQ==", base64_url::unescape("SGVsbG8sIHdvcmxkIQ"));
@@ -41,7 +41,8 @@ assert_eq!("https://example.com/?hash=AQIDBAUGBwgJ", url);
 
 ## Std
 
-Enable the `std` features to compile this crate with std.
+This crate is `no_std` compatible by default and only requires `alloc`.
+Enable the `std` feature to pass `std` support through to the `base64` dependency.
 
 ```toml
 [dependencies.base64-url]

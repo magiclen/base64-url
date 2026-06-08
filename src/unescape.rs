@@ -43,17 +43,17 @@ pub fn unescape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64_url: &S) -> Cow<'_, [u8
             let e = base64_url[p];
 
             match e {
-                45 => {
+                b'-' => {
                     base64.extend_from_slice(&base64_url[start..p]);
                     start = p + 1;
 
-                    base64.push(43);
+                    base64.push(b'+');
                 },
-                95 => {
+                b'_' => {
                     base64.extend_from_slice(&base64_url[start..p]);
                     start = p + 1;
 
-                    base64.push(47);
+                    base64.push(b'/');
                 },
                 _ => (),
             }
@@ -63,7 +63,7 @@ pub fn unescape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64_url: &S) -> Cow<'_, [u8
 
         base64.extend_from_slice(&base64_url[start..p]);
 
-        base64.resize(new_size, 61);
+        base64.resize(new_size, b'=');
 
         Cow::from(base64)
     } else {
@@ -77,11 +77,11 @@ pub fn unescape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64_url: &S) -> Cow<'_, [u8
             let e = base64_url[p];
 
             match e {
-                45 => {
-                    break 43;
+                b'-' => {
+                    break b'+';
                 },
-                95 => {
-                    break 47;
+                b'_' => {
+                    break b'/';
                 },
                 _ => (),
             }
@@ -106,17 +106,17 @@ pub fn unescape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64_url: &S) -> Cow<'_, [u8
             let e = base64_url[p];
 
             match e {
-                45 => {
+                b'-' => {
                     base64.extend_from_slice(&base64_url[start..p]);
                     start = p + 1;
 
-                    base64.push(43);
+                    base64.push(b'+');
                 },
-                95 => {
+                b'_' => {
                     base64.extend_from_slice(&base64_url[start..p]);
                     start = p + 1;
 
-                    base64.push(47);
+                    base64.push(b'/');
                 },
                 _ => (),
             }
@@ -161,8 +161,8 @@ pub fn unescape_u8_slice_try_in_place<S: ?Sized + AsMut<[u8]>>(
 
     for n in base64_url.iter_mut() {
         match *n {
-            45 => *n = 43,
-            95 => *n = 47,
+            b'-' => *n = b'+',
+            b'_' => *n = b'/',
             _ => (),
         }
     }
@@ -174,7 +174,7 @@ pub fn unescape_u8_slice_try_in_place<S: ?Sized + AsMut<[u8]>>(
 
         let new_size = base64_url.len() + (4 - padding);
 
-        base64_url_vec.resize(new_size, 61);
+        base64_url_vec.resize(new_size, b'=');
 
         Cow::from(base64_url_vec)
     } else {
