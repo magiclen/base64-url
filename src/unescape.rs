@@ -1,5 +1,5 @@
 use alloc::{borrow::Cow, string::String, vec::Vec};
-use core::{mem::swap, str::from_utf8_unchecked};
+use core::str::from_utf8_unchecked;
 
 /// Unescape a Base64-URL string to a Base64 string. The conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64-URL string by yourself.
 #[inline]
@@ -130,7 +130,8 @@ pub fn unescape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64_url: &S) -> Cow<'_, [u8
     }
 }
 
-/// In-place unescape a Base64-URL string to a Base64 string. It is unsafe because the conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64-URL string by yourself.
+/// Unescape a Base64-URL string in-place by replacing `-` with `+`, `_` with `/`, and adding `=` padding as needed.
+/// This function does not validate the Base64-URL format.
 #[inline]
 pub fn unescape_in_place(base64_url: &mut String) -> &str {
     let v = unsafe { base64_url.as_mut_vec() };
@@ -140,19 +141,31 @@ pub fn unescape_in_place(base64_url: &mut String) -> &str {
     base64_url.as_str()
 }
 
-/// In-place unescape Base64-URL data to Base64 data. It is unsafe because the conversion is not concerning with Base64 decoding. You need to make sure the input Base64-URL data is correct by yourself.
+/// Unescape Base64-URL data in-place by replacing `-` with `+`, `_` with `/`, and adding `=` padding as needed.
+/// This function does not validate the Base64-URL format.
 #[inline]
 pub fn unescape_vec_in_place(base64_url: &mut Vec<u8>) -> &[u8] {
-    let base64 = unescape_u8_slice_try_in_place(base64_url.as_mut_slice());
+    for n in base64_url.iter_mut() {
+        match *n {
+            b'-' => *n = b'+',
+            b'_' => *n = b'/',
+            _ => (),
+        }
+    }
 
-    if let Cow::Owned(mut base64) = base64 {
-        swap(base64_url, &mut base64);
+    let length = base64_url.len();
+    let padding = length & 0b11;
+
+    if padding > 0 {
+        base64_url.resize(length + (4 - padding), b'=');
     }
 
     base64_url.as_slice()
 }
 
-/// Unescape Base64-URL data to Base64 data and try to do it in-place. It is unsafe because the conversion is not concerning with Base64 decoding. You need to make sure the input Base64-URL data is correct by yourself.
+/// Unescape Base64-URL data by replacing `-` with `+` and `_` with `/` in the input.
+/// Return borrowed data if no padding is needed, or owned data with `=` padding added.
+/// This function does not validate the Base64-URL format.
 #[inline]
 pub fn unescape_u8_slice_try_in_place<S: ?Sized + AsMut<[u8]>>(
     base64_url: &mut S,
@@ -170,10 +183,11 @@ pub fn unescape_u8_slice_try_in_place<S: ?Sized + AsMut<[u8]>>(
     let padding = base64_url.len() & 0b11;
 
     if padding > 0 {
-        let mut base64_url_vec = base64_url.to_vec();
-
         let new_size = base64_url.len() + (4 - padding);
 
+        let mut base64_url_vec = Vec::with_capacity(new_size);
+
+        base64_url_vec.extend_from_slice(base64_url);
         base64_url_vec.resize(new_size, b'=');
 
         Cow::from(base64_url_vec)

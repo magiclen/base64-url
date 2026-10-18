@@ -10,6 +10,12 @@ pub fn decode<T: ?Sized + AsRef<[u8]>>(input: &T) -> Result<Vec<u8>, base64::Dec
 }
 
 /// Decode a Base64-URL string to data and directly store into a mutable `Vec<u8>` reference by concatenating them and return the slice of the decoded data.
+///
+/// # Implementation notes
+///
+/// This function uses `set_len` after a successful decode to include only the bytes written.
+/// With `base64` 0.22.1, the decoder writes new output bytes without reading their old values.
+/// Native release tests on x86_64 Linux found no incorrect output or crashes in the tested cases.
 #[inline]
 pub fn decode_to_vec<'a, T: ?Sized + AsRef<[u8]>>(
     input: &T,

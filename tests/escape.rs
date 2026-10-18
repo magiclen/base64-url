@@ -9,6 +9,11 @@ fn escape() {
             base64::engine::general_purpose::STANDARD.encode("https://magiclen.org").as_str()
         )
     );
+
+    for (input, expected) in [("+w==", "-w"), ("+/8=", "-_8"), ("+///", "-___")] {
+        assert_eq!(expected, base64_url::escape(input));
+        assert_eq!(expected.as_bytes(), base64_url::escape_u8_slice(input).as_ref());
+    }
 }
 
 #[test]
@@ -19,4 +24,20 @@ fn escape_in_place() {
     base64_url::escape_in_place(&mut base64_string);
 
     assert_eq!("aHR0cHM6Ly9tYWdpY2xlbi5vcmc", base64_string);
+
+    for (input, expected) in [("+w==", "-w"), ("+/8=", "-_8"), ("+///", "-___")] {
+        let mut string = input.to_string();
+
+        assert_eq!(expected, base64_url::escape_in_place(&mut string));
+        assert_eq!(expected, string);
+
+        let mut vec = input.as_bytes().to_vec();
+
+        assert_eq!(expected.as_bytes(), base64_url::escape_vec_in_place(&mut vec));
+        assert_eq!(expected.as_bytes(), vec.as_slice());
+
+        let mut bytes = input.as_bytes().to_vec();
+
+        assert_eq!(expected.as_bytes(), base64_url::escape_u8_slice_in_place(&mut bytes));
+    }
 }
