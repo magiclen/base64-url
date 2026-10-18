@@ -1,9 +1,9 @@
 [package]
 name = "base64-url"
-version = "3.0.5"
+version = "4.0.0"
 authors = ["Magic Len <len@magiclen.org>"]
 edition = "2021"
-rust-version = "1.60"
+rust-version = "1.71"
 repository = "https://github.com/magiclen/base64-url"
 homepage = "https://magiclen.org/base64-url"
 keywords = ["decode", "base64", "encode", "utf8", "url"]
@@ -13,7 +13,7 @@ license = "MIT"
 include = ["src/**/*", "Cargo.toml", "README.md", "LICENSE"]
 
 [dependencies]
-base64 = { version = "0.22", default-features = false, features = ["alloc"] }
+base64 = { version = "0.23", default-features = false, features = ["alloc"] }
 
 [features]
 default = []

@@ -24,7 +24,7 @@ pub fn encode_to_string<'a, T: ?Sized + AsRef<[u8]>>(input: &T, output: &'a mut 
 /// # Implementation notes
 ///
 /// This function uses `set_len` before encoding to avoid an extra memory write.
-/// With `base64` 0.22.1, the encoder writes new output bytes without reading their old values.
+/// With `base64` 0.23.1, the encoder writes new output bytes without reading their old values.
 /// Native release tests on x86_64 Linux found no incorrect output or crashes in the tested cases.
 #[inline]
 pub fn encode_to_vec<'a, T: ?Sized + AsRef<[u8]>>(input: &T, output: &'a mut Vec<u8>) -> &'a [u8] {
