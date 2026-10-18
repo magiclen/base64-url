@@ -4,18 +4,24 @@ use core::slice::from_raw_parts_mut;
 use base64::Engine;
 
 /// Decode a Base64-URL string to data.
+///
+/// The input must use the URL-safe alphabet without `=` padding.
 #[inline]
 pub fn decode<T: ?Sized + AsRef<[u8]>>(input: &T) -> Result<Vec<u8>, base64::DecodeError> {
     base64::engine::general_purpose::URL_SAFE_NO_PAD.decode(input)
 }
 
-/// Decode a Base64-URL string to data and directly store into a mutable `Vec<u8>` reference by concatenating them and return the slice of the decoded data.
+/// Decode a Base64-URL string, append its decoded bytes to `output`, and return the new bytes.
+///
+/// The input must use the URL-safe alphabet without `=` padding.
+/// On error, the existing bytes and length are kept, but the capacity may grow.
 ///
 /// # Implementation notes
 ///
 /// This function uses `set_len` after a successful decode to include only the bytes written.
 /// With `base64` 0.23.1, the decoder writes new output bytes without reading their old values.
-/// Native release tests on x86_64 Linux found no incorrect output or crashes in the tested cases.
+/// Earlier project benchmarks found that using safe APIs was slower, so this path is kept for speed.
+/// This still does not meet the initialization rule of `core::slice::from_raw_parts_mut`; benchmark results do not prove memory safety.
 #[inline]
 pub fn decode_to_vec<'a, T: ?Sized + AsRef<[u8]>>(
     input: &T,
@@ -46,7 +52,12 @@ pub fn decode_to_vec<'a, T: ?Sized + AsRef<[u8]>>(
     Ok(&output[current_length..])
 }
 
-/// Decode a Base64-URL string to data into a slice and return the slice with a valid length.
+/// Decode a Base64-URL string into `output` and return the slice of decoded bytes.
+///
+/// The input must use the URL-safe alphabet without `=` padding.
+/// On success, bytes after the returned slice are left unchanged.
+/// Return an error if `output` is too small or the input is invalid.
+/// On error, `output` may contain partial decoded data.
 #[inline]
 pub fn decode_to_slice<'a, T: ?Sized + AsRef<[u8]>>(
     input: &T,

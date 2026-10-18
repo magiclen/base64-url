@@ -3,6 +3,8 @@
 
 Base64 encode, decode, escape and unescape for URL applications.
 
+The `encode*` functions use the URL-safe alphabet (`-` and `_`) without `=` padding, and the `decode*` functions require this format.
+
 ## Examples
 
 Encode data to a Base64-URL string.
@@ -39,6 +41,10 @@ assert_eq!("AQIDBAUGBwgJ", base64_url::encode_to_string(hash, &mut url));
 assert_eq!("https://example.com/?hash=AQIDBAUGBwgJ", url);
 ```
 
+The `encode_to_string`, `encode_to_vec`, and `decode_to_vec` functions append to the output and return only the new data.
+The `*_to_slice` functions write from the start of the output slice and return only the written part.
+The `decode_to_slice` function may write part of the decoded data before returning an error.
+
 ## Std
 
 This crate is `no_std` compatible by default and only requires `alloc`.
@@ -49,6 +55,15 @@ Enable the `std` feature to pass `std` support through to the `base64` dependenc
 version = "*"
 features = ["std"]
 ```
+
+## Migrating from 3.x to 4.0
+
+Version 4.0 requires Rust 1.71 or later and uses `base64` 0.23 instead of 0.22.
+This crate re-exports `base64`, and its decode functions return error types from that crate.
+
+If you match `DecodeError::InvalidLastSymbol`, change `InvalidLastSymbol(offset, symbol)` to `InvalidLastSymbol { offset, symbol, .. }`.
+The new `symbol_value` field contains the decoded six-bit value.
+The `Display` output for this variant has changed, and the `Debug` output for `DecodeError` now uses `Display`.
 */
 
 #![cfg_attr(not(feature = "std"), no_std)]

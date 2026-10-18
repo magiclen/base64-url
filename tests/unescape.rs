@@ -13,9 +13,26 @@ fn unescape() {
             .as_slice()
     );
 
-    for (input, expected) in [("-w", "+w=="), ("-_8", "+/8="), ("-___", "+///")] {
-        assert_eq!(expected, base64_url::unescape(input));
-        assert_eq!(expected.as_bytes(), base64_url::unescape_u8_slice(input).as_ref());
+    for (input, expected, borrowed) in [
+        ("", "", true),
+        ("YWJj", "YWJj", true),
+        ("YQ", "YQ==", false),
+        ("YWI", "YWI=", false),
+        ("-w", "+w==", false),
+        ("-_8", "+/8=", false),
+        ("-___", "+///", false),
+        ("AA-w", "AA+w", false),
+        ("AAA_", "AAA/", false),
+    ] {
+        let output = base64_url::unescape(input);
+
+        assert_eq!(expected, output);
+        assert_eq!(borrowed, matches!(output, Cow::Borrowed(_)));
+
+        let output = base64_url::unescape_u8_slice(input);
+
+        assert_eq!(expected.as_bytes(), output.as_ref());
+        assert_eq!(borrowed, matches!(output, Cow::Borrowed(_)));
     }
 }
 

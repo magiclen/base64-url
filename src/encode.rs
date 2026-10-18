@@ -3,13 +3,13 @@ use core::str::from_utf8_unchecked;
 
 use base64::Engine;
 
-/// Encode data to a Base64-URL string.
+/// Encode data to a Base64-URL string without `=` padding.
 #[inline]
 pub fn encode<T: ?Sized + AsRef<[u8]>>(input: &T) -> String {
     base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(input)
 }
 
-/// Encode data to a Base64-URL string and directly store to a mutable `String` reference by concatenating them and return the slice of the Base64-URL string. It is usually for generating a URL.
+/// Append data as Base64-URL text without `=` padding to `output` and return the new text.
 ///
 /// This function uses [`encode_to_vec`] and has the same unsafe buffer handling described there.
 #[inline]
@@ -19,13 +19,14 @@ pub fn encode_to_string<'a, T: ?Sized + AsRef<[u8]>>(input: &T, output: &'a mut 
     unsafe { from_utf8_unchecked(base64_url) }
 }
 
-/// Encode data to Base64-URL data and directly store to a mutable `Vec<u8>` reference by concatenating them and return the slice of the Base64-URL data. It is usually for generating a URL.
+/// Append data as Base64-URL bytes without `=` padding to `output` and return the new bytes.
 ///
 /// # Implementation notes
 ///
 /// This function uses `set_len` before encoding to avoid an extra memory write.
 /// With `base64` 0.23.1, the encoder writes new output bytes without reading their old values.
-/// Native release tests on x86_64 Linux found no incorrect output or crashes in the tested cases.
+/// Earlier project benchmarks found that using safe APIs was slower, so this path is kept for speed.
+/// This still does not meet the initialization rule of `Vec::set_len`; benchmark results do not prove memory safety.
 #[inline]
 pub fn encode_to_vec<'a, T: ?Sized + AsRef<[u8]>>(input: &T, output: &'a mut Vec<u8>) -> &'a [u8] {
     let bytes = input.as_ref();
@@ -51,7 +52,10 @@ pub fn encode_to_vec<'a, T: ?Sized + AsRef<[u8]>>(input: &T, output: &'a mut Vec
     &output[current_length..]
 }
 
-/// Encode data to a Base64-URL string to a slice and return the slice with a valid length.
+/// Encode data to Base64-URL bytes without `=` padding and return the written part of `output`.
+///
+/// Bytes after the returned slice are left unchanged.
+/// Return an error if `output` is too small.
 #[inline]
 pub fn encode_to_slice<'a, T: ?Sized + AsRef<[u8]>>(
     input: &T,

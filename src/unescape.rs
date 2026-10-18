@@ -26,49 +26,12 @@ pub fn unescape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64_url: &S) -> Cow<'_, [u8
     let length = base64_url.len();
 
     let padding = length & 0b11;
+    let new_size = if padding > 0 { length + (4 - padding) } else { length };
+    let mut p = 0;
 
-    if padding > 0 {
-        let new_size = base64_url.len() + (4 - padding);
-
-        let mut base64 = Vec::with_capacity(new_size);
-
-        let mut p = 0;
-        let mut start = 0;
-
-        loop {
-            if p == length {
-                break;
-            }
-
-            let e = base64_url[p];
-
-            match e {
-                b'-' => {
-                    base64.extend_from_slice(&base64_url[start..p]);
-                    start = p + 1;
-
-                    base64.push(b'+');
-                },
-                b'_' => {
-                    base64.extend_from_slice(&base64_url[start..p]);
-                    start = p + 1;
-
-                    base64.push(b'/');
-                },
-                _ => (),
-            }
-
-            p += 1;
-        }
-
-        base64.extend_from_slice(&base64_url[start..p]);
-
-        base64.resize(new_size, b'=');
-
-        Cow::from(base64)
+    let mut base64 = if padding > 0 {
+        Vec::with_capacity(new_size)
     } else {
-        let mut p = 0;
-
         let first = loop {
             if p == length {
                 return Cow::from(base64_url);
@@ -89,45 +52,51 @@ pub fn unescape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64_url: &S) -> Cow<'_, [u8
             p += 1;
         };
 
-        let mut base64 = Vec::with_capacity(base64_url.len());
+        let mut base64 = Vec::with_capacity(new_size);
 
         base64.extend_from_slice(&base64_url[..p]);
         base64.push(first);
 
         p += 1;
 
-        let mut start = p;
+        base64
+    };
 
-        loop {
-            if p == length {
-                break;
-            }
+    let mut start = p;
 
-            let e = base64_url[p];
-
-            match e {
-                b'-' => {
-                    base64.extend_from_slice(&base64_url[start..p]);
-                    start = p + 1;
-
-                    base64.push(b'+');
-                },
-                b'_' => {
-                    base64.extend_from_slice(&base64_url[start..p]);
-                    start = p + 1;
-
-                    base64.push(b'/');
-                },
-                _ => (),
-            }
-
-            p += 1;
+    loop {
+        if p == length {
+            break;
         }
 
-        base64.extend_from_slice(&base64_url[start..p]);
+        let e = base64_url[p];
 
-        Cow::from(base64)
+        match e {
+            b'-' => {
+                base64.extend_from_slice(&base64_url[start..p]);
+                start = p + 1;
+
+                base64.push(b'+');
+            },
+            b'_' => {
+                base64.extend_from_slice(&base64_url[start..p]);
+                start = p + 1;
+
+                base64.push(b'/');
+            },
+            _ => (),
+        }
+
+        p += 1;
     }
+
+    base64.extend_from_slice(&base64_url[start..p]);
+
+    if padding > 0 {
+        base64.resize(new_size, b'=');
+    }
+
+    Cow::from(base64)
 }
 
 /// Unescape a Base64-URL string in-place by replacing `-` with `+`, `_` with `/`, and adding `=` padding as needed.
