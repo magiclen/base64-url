@@ -21,13 +21,15 @@ Decode a Base64-URL string to data.
 assert_eq!(b"Hello, world!", base64_url::decode("SGVsbG8sIHdvcmxkIQ").unwrap().as_slice());
 ```
 
-Escape a Base64 string to a Base64-URL string. The conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64 string by yourself.
+Escape a Base64 string to a Base64-URL string.
+This function does not validate the input, so make sure it is valid Base64 first.
 
 ```rust
 assert_eq!("SGVsbG8sIHdvcmxkIQ", base64_url::escape("SGVsbG8sIHdvcmxkIQ=="));
 ```
 
-Unescape a Base64-URL string to a Base64 string. The conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64-URL string by yourself.
+Unescape a Base64-URL string to a Base64 string.
+This function does not validate the input, so make sure it is valid Base64-URL first.
 
 ```rust
 assert_eq!("SGVsbG8sIHdvcmxkIQ==", base64_url::unescape("SGVsbG8sIHdvcmxkIQ"));

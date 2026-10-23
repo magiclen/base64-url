@@ -1,7 +1,9 @@
 use alloc::{borrow::Cow, string::String, vec::Vec};
 use core::str::from_utf8_unchecked;
 
-/// Escape a Base64 string to a Base64-URL string. The conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64 string by yourself.
+/// Escape a Base64 string to a Base64-URL string by replacing `+` with `-`, `/` with `_`, and removing `=` padding.
+/// Return borrowed data if no `+` or `/` is found.
+/// This function does not validate the Base64 format.
 #[inline]
 pub fn escape<S: ?Sized + AsRef<str>>(base64: &S) -> Cow<'_, str> {
     let base64 = base64.as_ref();
@@ -20,7 +22,9 @@ pub fn escape<S: ?Sized + AsRef<str>>(base64: &S) -> Cow<'_, str> {
     }
 }
 
-/// Escape Base64 data to Base64-URL data. The conversion is not concerning with Base64 decoding. You need to make sure the input Base64 data is correct by yourself.
+/// Escape Base64 data to Base64-URL data by replacing `+` with `-`, `/` with `_`, and removing `=` padding.
+/// Return borrowed data if no `+` or `/` is found.
+/// This function does not validate the Base64 format.
 #[inline]
 pub fn escape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64: &S) -> Cow<'_, [u8]> {
     let base64 = base64.as_ref();
@@ -93,7 +97,8 @@ pub fn escape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64: &S) -> Cow<'_, [u8]> {
     Cow::from(base64_url)
 }
 
-/// In-place escape a Base64 string to a Base64-URL string. The conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64 string by yourself.
+/// Escape a Base64 string in-place by replacing `+` with `-`, `/` with `_`, and removing `=` padding.
+/// This function does not validate the Base64 format.
 #[inline]
 pub fn escape_in_place(base64: &mut String) -> &str {
     let v = unsafe { base64.as_mut_vec() };
@@ -103,19 +108,19 @@ pub fn escape_in_place(base64: &mut String) -> &str {
     base64.as_str()
 }
 
-/// In-place escape Base64 data to Base64-URL data. The conversion is not concerning with Base64 decoding. You need to make sure the input Base64 data is correct by yourself.
+/// Escape Base64 data in-place by replacing `+` with `-`, `/` with `_`, and removing `=` padding.
+/// This function does not validate the Base64 format.
 #[inline]
 pub fn escape_vec_in_place(base64: &mut Vec<u8>) -> &[u8] {
     let length = escape_u8_slice_in_place(base64.as_mut_slice()).len();
 
-    unsafe {
-        base64.set_len(length);
-    }
+    base64.truncate(length);
 
     base64.as_slice()
 }
 
-/// In-place escape Base64 data to Base64-URL data. The conversion is not concerning with Base64 decoding. You need to make sure the input Base64 data is correct by yourself.
+/// Escape Base64 data in-place by replacing `+` with `-` and `/` with `_`, and return the part before the first `=`.
+/// This function does not validate the Base64 format.
 #[inline]
 pub fn escape_u8_slice_in_place<S: ?Sized + AsMut<[u8]>>(base64: &mut S) -> &[u8] {
     let base64 = base64.as_mut();

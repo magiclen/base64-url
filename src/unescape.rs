@@ -1,7 +1,9 @@
 use alloc::{borrow::Cow, string::String, vec::Vec};
 use core::str::from_utf8_unchecked;
 
-/// Unescape a Base64-URL string to a Base64 string. The conversion is not concerning with Base64 decoding. You need to make sure the input string is a correct Base64-URL string by yourself.
+/// Unescape a Base64-URL string to a Base64 string by replacing `-` with `+`, `_` with `/`, and adding `=` padding as needed.
+/// Return borrowed data if nothing needs to change.
+/// This function does not validate the Base64-URL format.
 #[inline]
 pub fn unescape<S: ?Sized + AsRef<str>>(base64_url: &S) -> Cow<'_, str> {
     let base64_url = base64_url.as_ref();
@@ -20,7 +22,9 @@ pub fn unescape<S: ?Sized + AsRef<str>>(base64_url: &S) -> Cow<'_, str> {
     }
 }
 
-/// Unescape Base64-URL data to Base64 data. The conversion is not concerning with Base64 decoding. You need to make sure the input Base64-URL data is correct by yourself.
+/// Unescape Base64-URL data to Base64 data by replacing `-` with `+`, `_` with `/`, and adding `=` padding as needed.
+/// Return borrowed data if nothing needs to change.
+/// This function does not validate the Base64-URL format.
 pub fn unescape_u8_slice<S: ?Sized + AsRef<[u8]>>(base64_url: &S) -> Cow<'_, [u8]> {
     let base64_url = base64_url.as_ref();
     let length = base64_url.len();
